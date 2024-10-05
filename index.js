@@ -7,11 +7,13 @@ document.addEventListener('DOMContentLoaded', function () {
   const pokemonTable = document.getElementById('pokemonTable');
   pokemonTable.innerHTML = createPokemonTable();
 
-  document.getElementById('startButton').addEventListener('click', pickRandomPokemon);
   document.getElementById('applyFilter').addEventListener('click', applyFilter);
   document.getElementById('memorizedButton').addEventListener('click', memorizePokemon);
-  document.getElementById('notMemorizedButton').addEventListener('click', resetSelection);
+  document.getElementById('notMemorizedButton').addEventListener('click', notMemorized);
   document.getElementById('showAnswerButton').addEventListener('click', showAnswer);
+
+  // 初期表示: ページを読み込んだときにランダムなポケモンを表示
+  applyFilter();
 });
 
 function createPokemonTable() {
@@ -76,15 +78,12 @@ function highlightPokemon(number) {
 function memorizePokemon() {
   if (currentNumber !== null && !memorizedPokemon.includes(currentNumber)) {
     memorizedPokemon.push(currentNumber);
-    resetSelection();
+    pickRandomPokemon(); // 次のポケモンを自動で表示
   }
 }
 
-function resetSelection() {
-  document.querySelectorAll('#pokemonTable td').forEach(td => td.classList.remove('selected'));
-  currentNumber = null;
-  document.getElementById('answer').textContent = '';
-  document.getElementById('pokemonImage').style.display = 'none';
+function notMemorized() {
+  pickRandomPokemon(); // 覚えていない場合も次のポケモンを表示
 }
 
 function showAnswer() {
