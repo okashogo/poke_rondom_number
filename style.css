@@ -13,10 +13,10 @@ body {
   }
   
   #pokemonTable td {
+    min-width: 100px;
     padding: 10px;
     border: 1px solid #ccc;
     text-align: center;
-    width: 100px;
     height: 100px;
     cursor: pointer;
     vertical-align: middle;

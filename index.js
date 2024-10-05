@@ -2,13 +2,16 @@ const totalPokemon = 1025;
 let currentNumber = null;
 let memorizedPokemon = [];
 let filteredPokemon = [];
-let hintNumbers = [];  // ヒント用の番号を保存する配列
+let hintNumbers = [];
 let displayedAnswerNumbers = [];
 let hint1Used = false;
 
 document.addEventListener('DOMContentLoaded', function () {
   const pokemonTable = document.getElementById('pokemonTable');
   pokemonTable.innerHTML = createPokemonTable();
+
+  // ローカルストレージから状態を読み込む
+  loadStateFromLocalStorage();
 
   document.getElementById('applyFilter').addEventListener('click', applyFilter);
   document.getElementById('memorizedButton').addEventListener('click', memorizePokemon);
@@ -24,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
 function createPokemonTable() {
   let html = '<table>';
   for (let i = 1; i <= totalPokemon; i++) {
-    if (i % 20 === 1) html += '<tr>';
+    if (i % 20 === 1) html += `<tr id="row-${Math.floor((i - 1) / 20) + 1}">`; // <tr>には行番号を追加
     html += `<td id="pokemon-${i}">${i}</td>`;
     if (i % 20 === 0) html += '</tr>';
   }
@@ -64,6 +67,7 @@ function applyFilter() {
 
   updateTableColors();
   pickRandomPokemon(); // フィルターに基づきランダム表示
+  saveStateToLocalStorage(); // 絞り込み条件を保存
 }
 
 function updateTableColors() {
@@ -90,6 +94,9 @@ function pickRandomPokemon() {
   displayHintsForDefault(currentNumber); // デフォルトのヒントを表示
   document.getElementById('hint2Button').disabled = true;
   hint1Used = false;
+
+  // <table>の行表示を調整
+  showRelevantRows(currentNumber);
 }
 
 function highlightPokemon(number) {
@@ -103,6 +110,7 @@ function memorizePokemon() {
     resetSelection();
     pickRandomPokemon(); // 次のポケモンを自動で表示
     updateMemorizedColors();
+    saveStateToLocalStorage(); // 覚えたポケモンを保存
   }
 }
 
@@ -147,7 +155,6 @@ function showHint2() {
     displayAnswers(hint2Numbers);
   }
 }
-
 
 function displayHintsForDefault(number) {
   const defaultHintNumbers = [
@@ -208,4 +215,39 @@ function clearHints() {
 function clearAll() {
   clearAnswers();
   clearHints();
+}
+
+function showRelevantRows(number) {
+  const rowNumber = Math.ceil(number / 20); // 行番号を取得
+  document.querySelectorAll('#pokemonTable tr').forEach(row => {
+    row.style.display = 'none'; // すべての行を非表示
+  });
+
+  // 現在の行とその前後の行を表示
+  const rowsToShow = [`#row-${rowNumber}`, `#row-${rowNumber - 1}`, `#row-${rowNumber + 1}`];
+  rowsToShow.forEach(selector => {
+    const row = document.querySelector(selector);
+    if (row) row.style.display = '';
+  });
+}
+
+// ローカルストレージに状態を保存
+function saveStateToLocalStorage() {
+  const state = {
+    filteredPokemon,
+    memorizedPokemon
+  };
+  localStorage.setItem('pokemonGameState', JSON.stringify(state));
+}
+
+// ローカルストレージから状態を読み込む
+function loadStateFromLocalStorage() {
+  const savedState = localStorage.getItem('pokemonGameState');
+  if (savedState) {
+    const { filteredPokemon: savedFilteredPokemon, memorizedPokemon: savedMemorizedPokemon } = JSON.parse(savedState);
+    filteredPokemon = savedFilteredPokemon || [];
+    memorizedPokemon = savedMemorizedPokemon || [];
+    updateTableColors();
+    updateMemorizedColors();
+  }
 }
