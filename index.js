@@ -3,16 +3,11 @@ let currentNumber = null;
 let memorizedPokemon = [];
 let filteredPokemon = [];
 let hintNumbers = [];
-let displayedAnswerNumbers = [];
+let answerRevealed = false;  // 答えが表示されたかどうかのフラグ
 let hint1Used = false;
 
+// 初期化
 document.addEventListener('DOMContentLoaded', function () {
-  const pokemonTable = document.getElementById('pokemonTable');
-  pokemonTable.innerHTML = createPokemonTable();
-
-  // ローカルストレージから状態を読み込む
-  loadStateFromLocalStorage();
-
   document.getElementById('applyFilter').addEventListener('click', applyFilter);
   document.getElementById('memorizedButton').addEventListener('click', memorizePokemon);
   document.getElementById('notMemorizedButton').addEventListener('click', notMemorized);
@@ -21,33 +16,21 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('hint2Button').addEventListener('click', showHint2);
   document.getElementById('resetMemorizedButton').addEventListener('click', resetMemorizedPokemon);
 
-  // 初期表示: ページを読み込んだときにランダムなポケモンを表示
+  // 初期表示
   applyFilter();
 });
 
-function createPokemonTable() {
-  let html = '<table>';
-  for (let i = 1; i <= totalPokemon; i++) {
-    if (i % 20 === 1) html += `<tr id="row-${Math.floor((i - 1) / 20) + 1}">`; // <tr>には行番号を追加
-    html += `<td id="pokemon-${i}">${i}</td>`;
-    if (i % 20 === 0) html += '</tr>';
-  }
-  html += '</table>';
-  return html;
-}
-
+// フィルター適用
 function applyFilter() {
   const numberInput = document.getElementById('numberInput').value;
   const fromNumber = parseInt(document.getElementById('fromNumber').value, 10);
   const toNumber = parseInt(document.getElementById('toNumber').value, 10);
 
-  // 数字をカンマ区切りで指定
   let numberList = [];
   if (numberInput) {
     numberList = numberInput.split(',').map(num => parseInt(num.trim(), 10)).filter(num => num >= 1 && num <= totalPokemon);
   }
 
-  // Noのfrom-to指定
   let rangeList = [];
   if (!isNaN(fromNumber) && !isNaN(toNumber)) {
     for (let i = fromNumber; i <= toNumber; i++) {
@@ -55,7 +38,6 @@ function applyFilter() {
     }
   }
 
-  // 両方が指定された場合は両方の条件に合う番号を絞り込む
   if (numberList.length > 0 && rangeList.length > 0) {
     filteredPokemon = numberList.filter(num => rangeList.includes(num));
   } else if (numberList.length > 0) {
@@ -63,27 +45,16 @@ function applyFilter() {
   } else if (rangeList.length > 0) {
     filteredPokemon = rangeList;
   } else {
-    filteredPokemon = Array.from({ length: totalPokemon }, (_, i) => i + 1); // 全範囲が対象
+    filteredPokemon = Array.from({ length: totalPokemon }, (_, i) => i + 1);
   }
 
-  updateTableColors();
-  pickRandomPokemon(); // フィルターに基づきランダム表示
-  saveStateToLocalStorage(); // 絞り込み条件を保存
+  pickRandomPokemon();
 }
 
-function updateTableColors() {
-  document.querySelectorAll('#pokemonTable td').forEach(td => {
-    const num = parseInt(td.id.replace('pokemon-', ''));
-    if (filteredPokemon.includes(num)) {
-      td.classList.remove('not-filtered');
-    } else {
-      td.classList.add('not-filtered');
-    }
-  });
-}
-
+// ランダムなポケモンを選ぶ
 function pickRandomPokemon() {
-  clearAll(); // 前回のヒントと答えをすべてクリア
+  answerRevealed = false;  // 答えが表示されていない状態にリセット
+  clearAllHints();  // 答えを表示している場合、リセットする
 
   const availablePokemon = filteredPokemon.filter(num => !memorizedPokemon.includes(num));
   if (availablePokemon.length === 0) {
@@ -91,171 +62,133 @@ function pickRandomPokemon() {
   }
 
   currentNumber = availablePokemon[Math.floor(Math.random() * availablePokemon.length)];
-  highlightPokemon(currentNumber);
-  displayHintsForDefault(currentNumber); // デフォルトのヒントを表示
+  displayCurrentNumber();  // currentNumberを表示
+  displayHintsForDefault(currentNumber);
   document.getElementById('hint2Button').disabled = true;
   hint1Used = false;
-
-  // <table>の行表示を調整
-  showRelevantRows(currentNumber);
+  document.getElementById('hint1Button').style.display = 'block';
+  document.getElementById('hint2Button').style.display = 'none';
+  document.getElementById('showAnswerButton').style.display = 'none';
 }
 
-function highlightPokemon(number) {
-  document.querySelectorAll('#pokemonTable td').forEach(td => td.classList.remove('selected'));
-  document.getElementById(`pokemon-${number}`).classList.add('selected');
+// currentNumberを表示
+function displayCurrentNumber() {
+  const currentNumberDisplay = document.getElementById('currentNumberDisplay');
+  currentNumberDisplay.innerHTML = `現在のポケモン番号: ${currentNumber}`;
 }
 
-function memorizePokemon() {
-  if (currentNumber !== null && !memorizedPokemon.includes(currentNumber)) {
-    memorizedPokemon.push(currentNumber);
-    resetSelection();
-    pickRandomPokemon(); // 次のポケモンを自動で表示
-    updateMemorizedColors();
-    saveStateToLocalStorage(); // 覚えたポケモンを保存
-  }
-}
-
-function notMemorized() {
-  resetSelection();
-  pickRandomPokemon(); // 覚えていない場合も次のポケモンを表示
-}
-
-function resetSelection() {
-  document.querySelectorAll('#pokemonTable td').forEach(td => td.classList.remove('selected'));
-  clearAll(); // ヒントと答えをすべてクリア
-  currentNumber = null;
-}
-
-function updateMemorizedColors() {
-  memorizedPokemon.forEach(num => {
-    const td = document.getElementById(`pokemon-${num}`);
-    if (td) {
-      td.classList.add('memorized');
-    }
-  });
-}
-
-function showAnswer() {
-  if (currentNumber !== null) {
-    displayAnswers([currentNumber]);
-  }
-}
-
-function showHint1() {
-  const hint1Numbers = [currentNumber - 2, currentNumber + 2].filter(n => n >= 1 && n <= totalPokemon);
-  hintNumbers = [...hintNumbers, ...hint1Numbers];  // ヒント1の番号をhintNumbersに追加
-  displayAnswers(hint1Numbers);
-  hint1Used = true;
-  document.getElementById('hint2Button').disabled = false;
-}
-
-function showHint2() {
-  if (hint1Used) {
-    const hint2Numbers = [currentNumber - 1, currentNumber + 1].filter(n => n >= 1 && n <= totalPokemon);
-    hintNumbers = [...hintNumbers, ...hint2Numbers];  // ヒント2の番号をhintNumbersに追加
-    displayAnswers(hint2Numbers);
-  }
-}
-
+// 指定範囲に基づいてポケモン番号を表示する関数
 function displayHintsForDefault(number) {
-  const defaultHintNumbers = [
-    number - 3, number - 4, number - 5,
-    number + 3, number + 4, number + 5
-  ].filter(n => n >= 1 && n <= totalPokemon); // ポケモン番号の範囲を超えないようにする
+  const hintRangeMinus = [number - 5, number - 4, number - 3].filter(n => n >= 1 && n <= totalPokemon);
+  const hintRangePlus = [number + 3, number + 4, number + 5].filter(n => n <= totalPokemon);
 
-  hintNumbers = [...defaultHintNumbers]; // 表示されたデフォルトヒントを保存
-  displayAnswers(hintNumbers);
+  const numberRange = [number - 2, number - 1, number, number + 1, number + 2].filter(n => n >= 1 && n <= totalPokemon);
+
+  // 各ヒント用のdivに数字を設定
+  updateDivWithNumber('hint_-5', hintRangeMinus[0]);
+  updateDivWithNumber('hint_-4', hintRangeMinus[1]);
+  updateDivWithNumber('hint_-3', hintRangeMinus[2]);
+
+  updateDivWithNumber('hint_-2', numberRange[0]);
+  updateDivWithNumber('hint_-1', numberRange[1]);
+
+  // 答えが表示されるまではcurrentNumberは数字のみ表示
+  if (answerRevealed) {
+    updateDivWithNumber('current', numberRange[2], true);  // currentNumberを答えとして表示
+  } else {
+    updateDivWithNumber('current', numberRange[2], false);  // 数字のみ表示
+  }
+
+  updateDivWithNumber('hint_1', numberRange[3]);
+  updateDivWithNumber('hint_2', numberRange[4]);
+
+  updateDivWithNumber('hint_3', hintRangePlus[0]);
+  updateDivWithNumber('hint_4', hintRangePlus[1]);
+  updateDivWithNumber('hint_5', hintRangePlus[2]);
 }
 
-function displayAnswers(numbers) {
-  const validNumbers = numbers.filter(n => n >= 1 && n <= totalPokemon); // ポケモン番号の範囲を超えないようにする
-  displayedAnswerNumbers = validNumbers;
+// 特定のdivに数字や画像を設定
+function updateDivWithNumber(className, num, isCurrent = false) {
+  const div = document.querySelector(`.${className}`);
+  if (!div) return;
 
-  validNumbers.forEach(hintNumber => {
-    const detailUrl = `https://pokeapi.co/api/v2/pokemon-species/${hintNumber}`;
+  div.innerHTML = `No.${num}`;
 
-    fetch(detailUrl)
+  // Hint-3～-5, +3～+5、もしくはボタン操作で画像を表示
+  if (isCurrent && answerRevealed || className === 'hint_-5' || className === 'hint_-4' || className === 'hint_-3' ||
+      className === 'hint_3' || className === 'hint_4' || className === 'hint_5' || hintNumbers.includes(num)) {
+    fetch(`https://pokeapi.co/api/v2/pokemon-species/${num}`)
       .then(response => response.json())
       .then(data => {
         const name = data.names.find(name => name.language.name === 'ja').name;
-
-        // セルの中に名前と画像を表示
-        const paddedNumberForImage = String(hintNumber).padStart(3, '0');
+        const paddedNumberForImage = String(num).padStart(3, '0');
         const imageUrl = `https://all-pokemon-ierukana.com/img/pokemon/${paddedNumberForImage}.png`;
-        
-        const hintCell = document.getElementById(`pokemon-${hintNumber}`);
-        hintCell.innerHTML = `
+        div.innerHTML = `
+          <span>No.${num}</span>
           <img src="${imageUrl}" alt="${name}">
           <span>${name}</span>
         `;
       })
       .catch(error => console.error('Error:', error));
-  });
-}
-
-function clearAnswers() {
-  displayedAnswerNumbers.forEach(hintNumber => {
-    const hintCell = document.getElementById(`pokemon-${hintNumber}`);
-    if (hintCell) {
-      hintCell.innerHTML = hintNumber; // 数字のみを表示
-    }
-  });
-  displayedAnswerNumbers = [];
-}
-
-function clearHints() {
-  hintNumbers.forEach(hintNumber => {
-    const hintCell = document.getElementById(`pokemon-${hintNumber}`);
-    if (hintCell) {
-      hintCell.innerHTML = hintNumber; // 数字のみを表示
-    }
-  });
-  hintNumbers = [];  // ヒント番号をクリア
-}
-
-function clearAll() {
-  clearAnswers();
-  clearHints();
-}
-
-function showRelevantRows(number) {
-  const rowNumber = Math.ceil(number / 20); // 行番号を取得
-  document.querySelectorAll('#pokemonTable tr').forEach(row => {
-    row.style.display = 'none'; // すべての行を非表示
-  });
-
-  // 現在の行とその前後の行を表示
-  const rowsToShow = [`#row-${rowNumber}`, `#row-${rowNumber - 1}`, `#row-${rowNumber + 1}`];
-  rowsToShow.forEach(selector => {
-    const row = document.querySelector(selector);
-    if (row) row.style.display = '';
-  });
-}
-
-// ローカルストレージに状態を保存
-function saveStateToLocalStorage() {
-  const state = {
-    filteredPokemon,
-    memorizedPokemon
-  };
-  localStorage.setItem('pokemonGameState', JSON.stringify(state));
-}
-
-// ローカルストレージから状態を読み込む
-function loadStateFromLocalStorage() {
-  const savedState = localStorage.getItem('pokemonGameState');
-  if (savedState) {
-    const { filteredPokemon: savedFilteredPokemon, memorizedPokemon: savedMemorizedPokemon } = JSON.parse(savedState);
-    filteredPokemon = savedFilteredPokemon || [];
-    memorizedPokemon = savedMemorizedPokemon || [];
-    updateTableColors();
-    updateMemorizedColors();
   }
 }
 
+// 答えが表示されたときにヒントをリセット
+function clearAllHints() {
+  answerRevealed = false;
+  hintNumbers = [];
+}
+
+// ポケモンを覚えたとして記録
+function memorizePokemon() {
+  if (currentNumber !== null && !memorizedPokemon.includes(currentNumber)) {
+    memorizedPokemon.push(currentNumber);
+    pickRandomPokemon();
+  }
+}
+
+// ポケモンを覚えていないとして次へ
+function notMemorized() {
+  pickRandomPokemon();
+}
+
+// 覚えたポケモンをリセット
 function resetMemorizedPokemon() {
-  memorizedPokemon = [];  // 覚えたポケモンのリストをリセット
-  saveStateToLocalStorage();  // ローカルストレージのデータもリセット
-  updateMemorizedColors();  // 表示の更新
+  memorizedPokemon = [];
   alert('覚えたポケモンをリセットしました');
+  pickRandomPokemon();
+}
+
+// showAnswer 関数: 答えが表示される
+function showAnswer() {
+  answerRevealed = true;
+  displayHintsForDefault(currentNumber);
+  document.getElementById('hint1Button').style.display = 'none';
+  document.getElementById('hint2Button').style.display = 'none';
+  document.getElementById('showAnswerButton').style.display = 'block';
+}
+
+// ヒント1を表示
+function showHint1() {
+  const hint1Numbers = [currentNumber - 2, currentNumber + 2].filter(n => n >= 1 && n <= totalPokemon);
+  hintNumbers = [...new Set([...hintNumbers, ...hint1Numbers])];  // ヒント1の番号をhintNumbersに追加
+  displayHintsForDefault(currentNumber);
+  hint1Used = true;
+  document.getElementById('hint2Button').disabled = false;
+  document.getElementById('hint1Button').style.display = 'none';
+  document.getElementById('hint2Button').style.display = 'block';
+  document.getElementById('showAnswerButton').style.display = 'none';
+}
+
+// ヒント2を表示
+function showHint2() {
+  if (hint1Used) {
+    const hint2Numbers = [currentNumber - 1, currentNumber + 1].filter(n => n >= 1 && n <= totalPokemon);
+    hintNumbers = [...new Set([...hintNumbers, ...hint2Numbers])];  // ヒント2の番号をhintNumbersに追加
+    displayHintsForDefault(currentNumber);
+    
+    document.getElementById('hint1Button').style.display = 'none';
+    document.getElementById('hint2Button').style.display = 'none';
+    document.getElementById('showAnswerButton').style.display = 'block';
+  }
 }

@@ -11,7 +11,7 @@
 
   <div id="filter-options">
     <div>
-        <button id="resetMemorizedButton">覚えたポケモンをリセット</button>
+      <button id="resetMemorizedButton">覚えたポケモンをリセット</button>
     </div>
     <div>
       <label for="numberInput">カンマ区切りで数字を指定:</label>
@@ -25,23 +25,43 @@
       <label for="toNumber">NoのTo:</label>
       <input type="number" id="toNumber" min="1" max="1025">
     </div>
-
     <button id="applyFilter">絞り込んでランダムに表示</button>
   </div>
 
-  
-  <div id="pokemonTableWrapper">
-      <div id="pokemonTable">
-          <!-- ポケモン番号が20列で表示されます -->
-        </div>
+  <!-- currentNumberの表示 -->
+  <div id="currentNumberDisplay">現在のポケモン番号: </div>
+
+  <!-- 11個のdivを用意 -->
+  <div>
+    <div class="pokemonContainer">
+      <div class="hint hint_-5"></div>
+      <div class="hint hint_-4"></div>
+      <div class="hint hint_-3"></div>
+      <div class="hint hint_-2"></div>
     </div>
+    <div  class="pokemonContainer">
+      <div class="hint hint_-1"></div>
+      <div class="current"></div>
+      <div class="hint hint_1"></div>
+    </div>
+    <div  class="pokemonContainer">
+      <div class="hint hint_2"></div>
+      <div class="hint hint_3"></div>
+      <div class="hint hint_4"></div>
+      <div class="hint hint_5"></div>
+    </div>
+  </div>
     
     <div id="controls">
-      <button id="memorizedButton">覚えた</button>
-      <button id="notMemorizedButton">覚えていない</button>
-      <button id="showAnswerButton">答えを見る</button>
-      <button id="hint1Button">ヒント1</button>
-      <button id="hint2Button" disabled>ヒント2</button>
+      <div style="display: flex; gap: 10px; justify-content: center;">
+        <button id="memorizedButton">覚えた</button>
+        <button id="notMemorizedButton">覚えていない</button>
+      </div>
+      <div style="display: flex; justify-content: center; margin-top: 30px;">
+        <button id="hint1Button" style="display: block;">ヒント1</button>
+        <button id="hint2Button" disabled style="display: none;">ヒント2</button>
+        <button id="showAnswerButton" style="display: none;">答えを見る</button>
+      </div>
     </div>
 
   <script src="index.js"></script>

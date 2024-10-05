@@ -1,82 +1,47 @@
 body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-  }
-  
-  #pokemonTableWrapper {
-    overflow-x: auto; /* 横スクロールを有効にする */
-    width: 100%; /* 画面幅に対応する */
-    margin: 50px 0;
-  }
-  
-  #pokemonTable {
-    white-space: nowrap; /* テーブル全体を1行にする */
-    table-layout: fixed; /* 固定レイアウト */
-  }  
-  
-  #pokemonTable table {
-    border-collapse: collapse;
-  }
-  
-  #pokemonTable td {
-    min-width: 50px;
-    padding: 5px;
-    border: 1px solid #ccc;
-    text-align: center;
-    height: 50px;
-    cursor: pointer;
-    vertical-align: middle;
-  }
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
 
-  #pokemonTable td img {
-    max-width: 35px;
-    max-height: 35px;
-  }
-  
-  .selected {
-    background-color: red;
-    color: white;
-  }
-  
-  .memorized {
-    background-color: lightgreen;
-  }
-  
-  .not-filtered {
-    background-color: lightgray;
-  }
-  
-  #controls {
-    margin-bottom: 20px;
-    margin-top: 10px;
-  }
-  
-  #controls button {
-    margin: 5px;
-    padding: 10px 20px;
-    cursor: pointer;
-  }
-  
-  #filter-options {
-    margin-bottom: 20px;
-  }
-  
-  #filter-options label {
-    margin-right: 10px;
-  }
-  
-  #pokemonTable td img {
-    width: 50px;
-    height: 50px;
-  }
-  
-  #pokemonTable td span {
-    display: block;
-    font-size: 14px;
-  }
-  
-  #applyFilter {
-    margin-top: 10px;
-    padding: 10px 20px;
-    cursor: pointer;
-  }
+.pokemonContainer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 50px 0;
+}
+
+.hint, .current {
+  width: 120px;
+  height: 180px;
+  border: 1px solid #ccc;
+  margin: 5px;
+  text-align: center;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.current {
+  background-color: red;
+  color: white;
+}
+
+.memorized {
+  background-color: lightgreen;
+}
+
+#controls button {
+  margin: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  width: 150px;
+}
+
+#currentNumberDisplay {
+  margin-top: 30px;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
