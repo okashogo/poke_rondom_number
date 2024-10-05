@@ -27,6 +27,14 @@ body {
     color: white;
   }
   
+  .memorized {
+    background-color: lightgreen;
+  }
+  
+  .not-filtered {
+    background-color: lightgray;
+  }
+  
   #controls {
     margin-bottom: 20px;
     margin-top: 10px;
