@@ -8,8 +8,8 @@ body {
 }
 
 img {
-  width: 64px;
-  height: 64px;
+  width: 60px;
+  height: 60px;
 }
 
 button {
@@ -31,9 +31,9 @@ button {
 }
 
 .hint, .current {
-  max-width: 70px;
-  width: 70px;
-  min-width: 70px;
+  max-width: 65px;
+  width: 65px;
+  min-width: 65px;
   height: 100px;
   border: 1px solid #ccc;
   margin: 0 5px;
