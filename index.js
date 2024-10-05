@@ -2,7 +2,7 @@ const totalPokemon = 1025;
 let currentNumber = null;
 let memorizedPokemon = [];
 let filteredPokemon = [];
-let hintNumbers = [];
+let hintNumbers = [];  // ヒント用の番号を保存する配列
 let displayedAnswerNumbers = [];
 let hint1Used = false;
 
@@ -78,8 +78,7 @@ function updateTableColors() {
 }
 
 function pickRandomPokemon() {
-  clearHints(); // 前回のヒントをクリア
-  clearAnswers(); // 前回の答えをクリア
+  clearAll(); // 前回のヒントと答えをすべてクリア
 
   const availablePokemon = filteredPokemon.filter(num => !memorizedPokemon.includes(num));
   if (availablePokemon.length === 0) {
@@ -114,8 +113,7 @@ function notMemorized() {
 
 function resetSelection() {
   document.querySelectorAll('#pokemonTable td').forEach(td => td.classList.remove('selected'));
-  clearHints(); // ヒントをクリア
-  clearAnswers(); // 表示された答えをクリア
+  clearAll(); // ヒントと答えをすべてクリア
   currentNumber = null;
 }
 
@@ -135,23 +133,29 @@ function showAnswer() {
 }
 
 function showHint1() {
-  displayAnswers([currentNumber - 2, currentNumber + 2]);
+  const hint1Numbers = [currentNumber - 2, currentNumber + 2].filter(n => n >= 1 && n <= totalPokemon);
+  hintNumbers = [...hintNumbers, ...hint1Numbers];  // ヒント1の番号をhintNumbersに追加
+  displayAnswers(hint1Numbers);
   hint1Used = true;
   document.getElementById('hint2Button').disabled = false;
 }
 
 function showHint2() {
   if (hint1Used) {
-    displayAnswers([currentNumber - 1, currentNumber + 1]);
+    const hint2Numbers = [currentNumber - 1, currentNumber + 1].filter(n => n >= 1 && n <= totalPokemon);
+    hintNumbers = [...hintNumbers, ...hint2Numbers];  // ヒント2の番号をhintNumbersに追加
+    displayAnswers(hint2Numbers);
   }
 }
 
+
 function displayHintsForDefault(number) {
-  const hintNumbers = [
+  const defaultHintNumbers = [
     number - 3, number - 4, number - 5,
     number + 3, number + 4, number + 5
   ].filter(n => n >= 1 && n <= totalPokemon); // ポケモン番号の範囲を超えないようにする
 
+  hintNumbers = [...defaultHintNumbers]; // 表示されたデフォルトヒントを保存
   displayAnswers(hintNumbers);
 }
 
@@ -198,5 +202,10 @@ function clearHints() {
       hintCell.innerHTML = hintNumber; // 数字のみを表示
     }
   });
-  hintNumbers = [];
+  hintNumbers = [];  // ヒント番号をクリア
+}
+
+function clearAll() {
+  clearAnswers();
+  clearHints();
 }
