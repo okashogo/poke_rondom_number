@@ -94,13 +94,16 @@ function showAnswer() {
       .then(response => response.json())
       .then(data => {
         const name = data.names.find(name => name.language.name === 'ja').name;
-        document.getElementById('answer').textContent = `答え: ${name}`;
 
-        // 画像の表示
+        // セルの中に名前と画像を表示
         const paddedNumberForImage = String(currentNumber).padStart(3, '0');
         const imageUrl = `https://all-pokemon-ierukana.com/img/pokemon/${paddedNumberForImage}.png`;
-        document.getElementById('pokemonImage').src = imageUrl;
-        document.getElementById('pokemonImage').style.display = 'block';
+        
+        const pokemonCell = document.getElementById(`pokemon-${currentNumber}`);
+        pokemonCell.innerHTML = `
+          <img src="${imageUrl}" alt="${name}">
+          <span>${name}</span>
+        `;
       })
       .catch(error => console.error('Error:', error));
   }
