@@ -3,6 +3,21 @@ body {
   text-align: center;
 }
 
+.vertical-space {
+  margin-bottom: 20px;
+}
+
+button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
 .pokemonContainer {
   display: flex;
   justify-content: center;
