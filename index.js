@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('showAnswerButton').addEventListener('click', showAnswer);
   document.getElementById('hint1Button').addEventListener('click', showHint1);
   document.getElementById('hint2Button').addEventListener('click', showHint2);
+  document.getElementById('resetMemorizedButton').addEventListener('click', resetMemorizedPokemon);
 
   // 初期表示: ページを読み込んだときにランダムなポケモンを表示
   applyFilter();
@@ -250,4 +251,11 @@ function loadStateFromLocalStorage() {
     updateTableColors();
     updateMemorizedColors();
   }
+}
+
+function resetMemorizedPokemon() {
+  memorizedPokemon = [];  // 覚えたポケモンのリストをリセット
+  saveStateToLocalStorage();  // ローカルストレージのデータもリセット
+  updateMemorizedColors();  // 表示の更新
+  alert('覚えたポケモンをリセットしました');
 }
