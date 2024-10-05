@@ -10,29 +10,36 @@
   <h1>ポケモン覚えゲーム</h1>
 
   <div id="filter-options">
-    <label for="numberInput">カンマ区切りで数字を指定:</label>
-    <input type="text" id="numberInput" placeholder="例: 1,2,3,10">
-    
-    <label for="fromNumber">NoのFrom:</label>
-    <input type="number" id="fromNumber" min="1" max="1025">
-
-    <label for="toNumber">NoのTo:</label>
-    <input type="number" id="toNumber" min="1" max="1025">
+    <div></div>
+      <label for="numberInput">カンマ区切りで数字を指定:</label>
+      <input type="text" id="numberInput" placeholder="例: 1,2,3,10">
+    </div>
+    <div>
+      <label for="fromNumber">NoのFrom:</label>
+      <input type="number" id="fromNumber" min="1" max="1025">
+    </div>
+    <div>
+      <label for="toNumber">NoのTo:</label>
+      <input type="number" id="toNumber" min="1" max="1025">
+    </div>
 
     <button id="applyFilter">絞り込んでランダムに表示</button>
   </div>
 
-  <div id="controls">
-    <button id="memorizedButton">覚えた</button>
-    <button id="notMemorizedButton">覚えていない</button>
-    <button id="showAnswerButton">答えを見る</button>
-    <button id="hint1Button">ヒント1</button>
-    <button id="hint2Button" disabled>ヒント2</button>
-  </div>
-
-  <div id="pokemonTable">
-    <!-- ポケモン番号が20列で表示されます -->
-  </div>
+  
+  <div id="pokemonTableWrapper">
+      <div id="pokemonTable">
+          <!-- ポケモン番号が20列で表示されます -->
+        </div>
+    </div>
+    
+    <div id="controls">
+      <button id="memorizedButton">覚えた</button>
+      <button id="notMemorizedButton">覚えていない</button>
+      <button id="showAnswerButton">答えを見る</button>
+      <button id="hint1Button">ヒント1</button>
+      <button id="hint2Button" disabled>ヒント2</button>
+    </div>
 
   <script src="index.js"></script>
 </body>

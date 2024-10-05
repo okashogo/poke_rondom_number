@@ -3,10 +3,16 @@ body {
     text-align: center;
   }
   
-  #pokemonTable {
-    margin: 20px auto;
-    width: fit-content;
+  #pokemonTableWrapper {
+    overflow-x: auto; /* 横スクロールを有効にする */
+    width: 100%; /* 画面幅に対応する */
+    margin: 50px 0;
   }
+  
+  #pokemonTable {
+    white-space: nowrap; /* テーブル全体を1行にする */
+    table-layout: fixed; /* 固定レイアウト */
+  }  
   
   #pokemonTable table {
     border-collapse: collapse;
@@ -64,3 +70,8 @@ body {
     font-size: 14px;
   }
   
+  #applyFilter {
+    margin-top: 10px;
+    padding: 10px 20px;
+    cursor: pointer;
+  }
