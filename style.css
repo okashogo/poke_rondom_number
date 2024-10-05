@@ -1,0 +1,58 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+  }
+  
+  #pokemonTable {
+    margin: 20px auto;
+    width: fit-content;
+  }
+  
+  #pokemonTable table {
+    border-collapse: collapse;
+  }
+  
+  #pokemonTable td {
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-align: center;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+  }
+  
+  .selected {
+    background-color: red;
+    color: white;
+  }
+  
+  #controls {
+    margin-top: 20px;
+  }
+  
+  #controls button {
+    margin: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+  }
+  
+  #answer {
+    margin-top: 20px;
+    font-size: 20px;
+    font-weight: bold;
+  }
+  
+  #pokemonImage {
+    margin-top: 10px;
+    width: 200px;
+    height: 200px;
+  }
+  
+  #filter-options {
+    margin-bottom: 20px;
+  }
+  
+  #filter-options label {
+    margin-right: 10px;
+  }
+  

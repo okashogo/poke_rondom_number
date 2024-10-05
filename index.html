@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ポケモン覚えゲーム</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>ポケモン覚えゲーム</h1>
+
+  <div id="filter-options">
+    <label for="numberInput">カンマ区切りで数字を指定:</label>
+    <input type="text" id="numberInput" placeholder="例: 1,2,3,10">
+    
+    <label for="fromNumber">NoのFrom:</label>
+    <input type="number" id="fromNumber" min="1" max="1025">
+
+    <label for="toNumber">NoのTo:</label>
+    <input type="number" id="toNumber" min="1" max="1025">
+
+    <button id="applyFilter">絞り込んでランダムに表示</button>
+  </div>
+
+  <button id="startButton">ランダムなポケモンを表示</button>
+
+  <div id="pokemonTable">
+    <!-- ポケモン番号が20列で表示されます -->
+  </div>
+
+  <div id="controls">
+    <button id="memorizedButton">覚えた</button>
+    <button id="notMemorizedButton">覚えていない</button>
+    <button id="showAnswerButton">答えを見る</button>
+  </div>
+
+  <div id="answer"></div>
+  <img id="pokemonImage" alt="ポケモン画像" style="display:none;"/>
+
+  <script src="index.js"></script>
+</body>
+</html>
