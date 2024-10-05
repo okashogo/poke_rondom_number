@@ -19,13 +19,18 @@ body {
   }
   
   #pokemonTable td {
-    min-width: 100px;
-    padding: 10px;
+    min-width: 50px;
+    padding: 5px;
     border: 1px solid #ccc;
     text-align: center;
-    height: 100px;
+    height: 50px;
     cursor: pointer;
     vertical-align: middle;
+  }
+
+  #pokemonTable td img {
+    max-width: 35px;
+    max-height: 35px;
   }
   
   .selected {
