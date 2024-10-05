@@ -2,6 +2,7 @@ const totalPokemon = 1025;
 let currentNumber = null;
 let memorizedPokemon = [];
 let filteredPokemon = [];
+let hintNumbers = [];
 
 document.addEventListener('DOMContentLoaded', function () {
   const pokemonTable = document.getElementById('pokemonTable');
@@ -61,6 +62,7 @@ function applyFilter() {
 }
 
 function pickRandomPokemon() {
+  clearHints(); // 前回のヒントをクリア
   const availablePokemon = filteredPokemon.filter(num => !memorizedPokemon.includes(num));
   if (availablePokemon.length === 0) {
     return alert('全てのポケモンを覚えました！');
@@ -68,6 +70,7 @@ function pickRandomPokemon() {
 
   currentNumber = availablePokemon[Math.floor(Math.random() * availablePokemon.length)];
   highlightPokemon(currentNumber);
+  displayHints(currentNumber); // ヒントを表示
 }
 
 function highlightPokemon(number) {
@@ -78,12 +81,20 @@ function highlightPokemon(number) {
 function memorizePokemon() {
   if (currentNumber !== null && !memorizedPokemon.includes(currentNumber)) {
     memorizedPokemon.push(currentNumber);
+    resetSelection();
     pickRandomPokemon(); // 次のポケモンを自動で表示
   }
 }
 
 function notMemorized() {
+  resetSelection();
   pickRandomPokemon(); // 覚えていない場合も次のポケモンを表示
+}
+
+function resetSelection() {
+  document.querySelectorAll('#pokemonTable td').forEach(td => td.classList.remove('selected'));
+  clearHints(); // ヒントをクリア
+  currentNumber = null;
 }
 
 function showAnswer() {
@@ -107,4 +118,41 @@ function showAnswer() {
       })
       .catch(error => console.error('Error:', error));
   }
+}
+
+function displayHints(number) {
+  hintNumbers = [
+    number - 4, number - 3, number + 3, number + 4
+  ].filter(n => n >= 1 && n <= totalPokemon); // ポケモン番号の範囲を超えないようにする
+
+  hintNumbers.forEach(hintNumber => {
+    const detailUrl = `https://pokeapi.co/api/v2/pokemon-species/${hintNumber}`;
+
+    fetch(detailUrl)
+      .then(response => response.json())
+      .then(data => {
+        const name = data.names.find(name => name.language.name === 'ja').name;
+
+        // セルの中に名前と画像を表示
+        const paddedNumberForImage = String(hintNumber).padStart(3, '0');
+        const imageUrl = `https://all-pokemon-ierukana.com/img/pokemon/${paddedNumberForImage}.png`;
+        
+        const hintCell = document.getElementById(`pokemon-${hintNumber}`);
+        hintCell.innerHTML = `
+          <img src="${imageUrl}" alt="${name}">
+          <span>${name}</span>
+        `;
+      })
+      .catch(error => console.error('Error:', error));
+  });
+}
+
+function clearHints() {
+  hintNumbers.forEach(hintNumber => {
+    const hintCell = document.getElementById(`pokemon-${hintNumber}`);
+    if (hintCell) {
+      hintCell.innerHTML = hintNumber; // 数字のみを表示
+    }
+  });
+  hintNumbers = [];
 }
