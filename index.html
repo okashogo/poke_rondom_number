@@ -13,6 +13,15 @@
     <div class="vertical-space">
       <button id="resetMemorizedButton">覚えたポケモンをリセット</button>
     </div>
+    <!-- モード選択 -->
+    <div style="margin-bottom: 20px;">
+      <label for="difficulty">難易度を選択:</label>
+      <select id="difficulty">
+        <option value="easy">簡単</option>
+        <option value="normal">普通</option>
+        <option value="hard">難しい</option>
+      </select>
+    </div>
     <div class="vertical-space">
       <label for="numberInput">カンマ区切りで数字を指定:</label>
       <input type="text" id="numberInput" placeholder="例: 1,2,3,10">
@@ -34,7 +43,7 @@
   <!-- 11個のdivを用意 -->
   <div>
     <div class="pokemonContainer">
-      <div class="hint hint_-5"></div>
+      <!-- <div class="hint hint_-5"></div> -->
       <div class="hint hint_-4"></div>
       <div class="hint hint_-3"></div>
       <div class="hint hint_-2"></div>
@@ -48,7 +57,7 @@
       <div class="hint hint_2"></div>
       <div class="hint hint_3"></div>
       <div class="hint hint_4"></div>
-      <div class="hint hint_5"></div>
+      <!-- <div class="hint hint_5"></div> -->
     </div>
   </div>
     
@@ -59,7 +68,7 @@
       </div>
       <div style="display: flex; justify-content: center; margin-top: 30px;">
         <button id="hint1Button" style="display: block;">ヒント1</button>
-        <button id="hint2Button" disabled style="display: none;">ヒント2</button>
+        <button id="hint2Button" style="display: none;">ヒント2</button>
         <button id="showAnswerButton" style="display: none;">答えを見る</button>
       </div>
     </div>

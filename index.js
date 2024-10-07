@@ -5,6 +5,7 @@ let filteredPokemon = [];
 let hintNumbers = [];
 let answerRevealed = false;  // 答えが表示されたかどうかのフラグ
 let hint1Used = false;
+let difficulty = "easy";  // デフォルトは難しいモード
 
 // 初期化
 document.addEventListener('DOMContentLoaded', function () {
@@ -15,6 +16,11 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('hint1Button').addEventListener('click', showHint1);
   document.getElementById('hint2Button').addEventListener('click', showHint2);
   document.getElementById('resetMemorizedButton').addEventListener('click', resetMemorizedPokemon);
+
+  // モード選択時のイベント
+  document.getElementById('difficulty').addEventListener('change', function (e) {
+    difficulty = e.target.value;
+  });
 
   // 初期表示
   applyFilter();
@@ -64,11 +70,20 @@ function pickRandomPokemon() {
   currentNumber = availablePokemon[Math.floor(Math.random() * availablePokemon.length)];
   displayCurrentNumber();  // currentNumberを表示
   displayHintsForDefault(currentNumber);
-  document.getElementById('hint2Button').disabled = true;
   hint1Used = false;
-  document.getElementById('hint1Button').style.display = 'block';
+  document.getElementById('hint1Button').style.display = 'none';
   document.getElementById('hint2Button').style.display = 'none';
   document.getElementById('showAnswerButton').style.display = 'none';
+
+  if(difficulty === 'hard') {
+    document.getElementById('hint1Button').style.display = 'block';
+  }
+  if (difficulty === 'normal') {
+    document.getElementById('hint2Button').style.display = 'block';
+  }
+  if (difficulty === 'easy') {
+    document.getElementById('showAnswerButton').style.display = 'block';
+  }
 }
 
 // currentNumberを表示
@@ -79,43 +94,42 @@ function displayCurrentNumber() {
 
 // 指定範囲に基づいてポケモン番号を表示する関数
 function displayHintsForDefault(number) {
-  const hintRangeMinus = [number - 5, number - 4, number - 3].filter(n => n >= 1 && n <= totalPokemon);
-  const hintRangePlus = [number + 3, number + 4, number + 5].filter(n => n <= totalPokemon);
+  const hintRangeMinus = [number - 4, number - 3].filter(n => n >= 1 && n <= totalPokemon);
+  const hintRangePlus = [number + 3, number + 4].filter(n => n <= totalPokemon);
+  // const hintRangeMinus = [number - 5, number - 4, number - 3].filter(n => n >= 1 && n <= totalPokemon);
+  // const hintRangePlus = [number + 3, number + 4, number + 5].filter(n => n <= totalPokemon);
 
   const numberRange = [number - 2, number - 1, number, number + 1, number + 2].filter(n => n >= 1 && n <= totalPokemon);
 
+  // 難易度に応じてHintを表示
+  const shouldShowHint1 = difficulty === 'normal' || difficulty === 'easy';  // 普通、簡単はHint1(-2, +2)を最初から表示
+  const shouldShowHint2 = difficulty === 'easy';  // 簡単はHint2(-1, +1)も最初から表示
+  
   // 各ヒント用のdivに数字を設定
-  updateDivWithNumber('hint_-5', hintRangeMinus[0]);
-  updateDivWithNumber('hint_-4', hintRangeMinus[1]);
-  updateDivWithNumber('hint_-3', hintRangeMinus[2]);
+  // updateDivWithNumber('hint_-5', hintRangeMinus[0]);
+  updateDivWithNumber('hint_-4', hintRangeMinus[0]);
+  updateDivWithNumber('hint_-3', hintRangeMinus[1]);
 
-  updateDivWithNumber('hint_-2', numberRange[0]);
-  updateDivWithNumber('hint_-1', numberRange[1]);
-
-  // 答えが表示されるまではcurrentNumberは数字のみ表示
-  if (answerRevealed) {
-    updateDivWithNumber('current', numberRange[2], true);  // currentNumberを答えとして表示
-  } else {
-    updateDivWithNumber('current', numberRange[2], false);  // 数字のみ表示
-  }
-
-  updateDivWithNumber('hint_1', numberRange[3]);
-  updateDivWithNumber('hint_2', numberRange[4]);
+  updateDivWithNumber('hint_-2', numberRange[0], shouldShowHint1);
+  updateDivWithNumber('hint_-1', numberRange[1], shouldShowHint2);
+  updateDivWithNumber('current', numberRange[2], answerRevealed);  // 答えが表示されている場合のみcurrentNumberを表示
+  updateDivWithNumber('hint_1', numberRange[3], shouldShowHint2);
+  updateDivWithNumber('hint_2', numberRange[4], shouldShowHint1);
 
   updateDivWithNumber('hint_3', hintRangePlus[0]);
   updateDivWithNumber('hint_4', hintRangePlus[1]);
-  updateDivWithNumber('hint_5', hintRangePlus[2]);
+  // updateDivWithNumber('hint_5', hintRangePlus[2]);
 }
 
 // 特定のdivに数字や画像を設定
-function updateDivWithNumber(className, num, isCurrent = false) {
+function updateDivWithNumber(className, num, shouldShowImage = false) {
   const div = document.querySelector(`.${className}`);
   if (!div) return;
 
   div.innerHTML = `No.${num}`;
 
   // Hint-3～-5, +3～+5、もしくはボタン操作で画像を表示
-  if (isCurrent && answerRevealed || className === 'hint_-5' || className === 'hint_-4' || className === 'hint_-3' ||
+  if (shouldShowImage || className === 'hint_-5' || className === 'hint_-4' || className === 'hint_-3' ||
       className === 'hint_3' || className === 'hint_4' || className === 'hint_5' || hintNumbers.includes(num)) {
     fetch(`https://pokeapi.co/api/v2/pokemon-species/${num}`)
       .then(response => response.json())
@@ -174,7 +188,6 @@ function showHint1() {
   hintNumbers = [...new Set([...hintNumbers, ...hint1Numbers])];  // ヒント1の番号をhintNumbersに追加
   displayHintsForDefault(currentNumber);
   hint1Used = true;
-  document.getElementById('hint2Button').disabled = false;
   document.getElementById('hint1Button').style.display = 'none';
   document.getElementById('hint2Button').style.display = 'block';
   document.getElementById('showAnswerButton').style.display = 'none';
@@ -182,13 +195,11 @@ function showHint1() {
 
 // ヒント2を表示
 function showHint2() {
-  if (hint1Used) {
-    const hint2Numbers = [currentNumber - 1, currentNumber + 1].filter(n => n >= 1 && n <= totalPokemon);
-    hintNumbers = [...new Set([...hintNumbers, ...hint2Numbers])];  // ヒント2の番号をhintNumbersに追加
-    displayHintsForDefault(currentNumber);
-    
-    document.getElementById('hint1Button').style.display = 'none';
-    document.getElementById('hint2Button').style.display = 'none';
-    document.getElementById('showAnswerButton').style.display = 'block';
-  }
+  const hint2Numbers = [currentNumber - 1, currentNumber + 1].filter(n => n >= 1 && n <= totalPokemon);
+  hintNumbers = [...new Set([...hintNumbers, ...hint2Numbers])];  // ヒント2の番号をhintNumbersに追加
+  displayHintsForDefault(currentNumber);
+  
+  document.getElementById('hint1Button').style.display = 'none';
+  document.getElementById('hint2Button').style.display = 'none';
+  document.getElementById('showAnswerButton').style.display = 'block';
 }
