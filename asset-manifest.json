@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/poke_rondom_number/static/css/main.d8ba3360.css",
-    "main.js": "/poke_rondom_number/static/js/main.d06ce78b.js",
+    "main.css": "/poke_rondom_number/static/css/main.ba1147d0.css",
+    "main.js": "/poke_rondom_number/static/js/main.d4f045d9.js",
     "static/js/453.46423c3e.chunk.js": "/poke_rondom_number/static/js/453.46423c3e.chunk.js",
     "index.html": "/poke_rondom_number/index.html",
-    "main.d8ba3360.css.map": "/poke_rondom_number/static/css/main.d8ba3360.css.map",
-    "main.d06ce78b.js.map": "/poke_rondom_number/static/js/main.d06ce78b.js.map",
+    "main.ba1147d0.css.map": "/poke_rondom_number/static/css/main.ba1147d0.css.map",
+    "main.d4f045d9.js.map": "/poke_rondom_number/static/js/main.d4f045d9.js.map",
     "453.46423c3e.chunk.js.map": "/poke_rondom_number/static/js/453.46423c3e.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.d8ba3360.css",
-    "static/js/main.d06ce78b.js"
+    "static/css/main.ba1147d0.css",
+    "static/js/main.d4f045d9.js"
   ]
 }
