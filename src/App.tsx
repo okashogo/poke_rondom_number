@@ -253,7 +253,7 @@ const App: React.FC = () => {
               hintNumber={hintNumbers[2]}
               name={
                 pokemonData.find(
-                  (pokemon) => pokemon['No'] === hintNumbers[1]
+                  (pokemon) => pokemon['No'] === hintNumbers[2]
                 )?.['name']
               }
               isHidden={difficulty === 'hard' && openHint === 2}
@@ -273,7 +273,7 @@ const App: React.FC = () => {
               hintNumber={currentNumber!}
               name={
                 pokemonData.find(
-                  (pokemon) => pokemon['No'] === hintNumbers[5]
+                  (pokemon) => pokemon['No'] === currentNumber
                 )?.['name']
               }
               isHidden={!answerRevealed}
@@ -282,7 +282,7 @@ const App: React.FC = () => {
               hintNumber={hintNumbers[4]}
               name={
                 pokemonData.find(
-                  (pokemon) => pokemon['No'] === hintNumbers[5]
+                  (pokemon) => pokemon['No'] === hintNumbers[4]
                 )?.['name']
               }
               isHidden={difficulty !== 'easy' && openHint !== 0}
@@ -418,18 +418,20 @@ const PokemonBox = ({
 }) => {
   return (
     <div className="w-[150px] h-[150px] justify-center items-center flex flex-col">
-      {hintNumber}
-      {!isHidden && hintNumber ? (
-        <img
-          src={`https://all-pokemon-ierukana.com/img/pokemon/${String(
-            hintNumber
-          ).padStart(3, '0')}.png`}
-        />
-      ) : (
-        <div className="h-[65px] justify-center items-center flex flex-col">
+      <div className="h-[30px]">{hintNumber}</div>
+      <div className="h-[92px] flex justify-center items-center">
+        {!isHidden && hintNumber ? (
+          <img
+            className="h-[92px] w-[92px]"
+            src={`https://all-pokemon-ierukana.com/img/pokemon/${String(
+              hintNumber
+            ).padStart(3, '0')}.png`}
+          />
+        ) : (
           <span className="text-gray-500">???</span>
-        </div>
-      )}
+        )}
+      </div>
+      <div className="h-[30px]">{!isHidden && hintNumber ? name : ''}</div>
     </div>
   );
 };
