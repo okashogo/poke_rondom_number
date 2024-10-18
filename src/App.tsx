@@ -50,6 +50,17 @@ const App: React.FC = () => {
   };
 
   useEffect(() => {
+    const resultStoredMemorizedPokemon =
+      localStorage.getItem('memorizedPokemon');
+    if (resultStoredMemorizedPokemon && memorizedPokemon.length === 0) {
+      console.log(
+        'resultStoredMemorizedPokemon',
+        resultStoredMemorizedPokemon,
+        memorizedPokemon,
+        JSON.parse(resultStoredMemorizedPokemon)
+      );
+      setMemorizedPokemon(JSON.parse(resultStoredMemorizedPokemon));
+    }
     applyFilter(); // 初期表示時にフィルタを適用
 
     const headers = csvString.split(','); // ヘッダー行を取得
@@ -70,6 +81,16 @@ const App: React.FC = () => {
       pickRandomPokemon();
     }
   }, [filteredPokemon]);
+
+  useEffect(() => {
+    if (filteredPokemon.length > 0) {
+      pickRandomPokemon();
+    }
+  }, [filteredPokemon]);
+
+  useEffect(() => {
+    localStorage.setItem('memorizedPokemon', JSON.stringify(memorizedPokemon));
+  }, [memorizedPokemon]);
 
   useEffect(() => {
     if (difficulty === 'easy') {
