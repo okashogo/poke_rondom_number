@@ -154,7 +154,7 @@ const App: React.FC = () => {
 
   return (
     <div className="text-center">
-      <h1 className="text-3xl font-bold">ポケモンNo埋めゲーム</h1>
+      <h1 className="text-3xl font-bold mt-[50px]">ポケモンNo埋めゲーム</h1>
 
       <div id="filter-options" className="my-4">
         <div className="mb-4">
@@ -318,63 +318,64 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex items-center justify-center gap-[35px] mt-[30px]">
-        {[
-          {
-            text: '◎',
-            step: 'fully',
-          },
-          {
-            text: '◯',
-            step: 'just',
-          },
-          {
-            text: '△',
-            step: 'seen',
-          },
-          {
-            text: '◻︎',
-            step: 'barely',
-          },
-          {
-            text: '×',
-            step: 'unknown',
-          },
-        ].map((item) => {
-          return (
-            <div className="">
-              <button
-                className="cursor-pointer bg-blue-500 text-white px-4 py-2 rounded-md"
-                onClick={() => memorizePokemon(item.step as Step)}
-              >
-                {item.text}
-              </button>
-              <div>
-                <span
-                  className={(() => {
-                    const memorized = memorizedPokemon.find(
-                      (pokemon) => pokemon.no === currentNumber
-                    );
-                    if (memorized) {
-                      return memorized?.step === item.step
-                        ? 'text-red-500'
-                        : '';
-                    }
-                    return item.step === 'unknown' ? 'text-red-500' : '';
-                  })()}
+      <div className="flex items-center justify-center mt-[30px]">
+        <div className="flex items-center justify-between gap-[23px]">
+          {[
+            {
+              text: '◎',
+              step: 'fully',
+            },
+            {
+              text: '◯',
+              step: 'just',
+            },
+            {
+              text: '△',
+              step: 'seen',
+            },
+            {
+              text: '◻︎',
+              step: 'barely',
+            },
+            {
+              text: '×',
+              step: 'unknown',
+            },
+          ].map((item) => {
+            return (
+              <div className="w-[50px]">
+                <button
+                  className="cursor-pointer bg-blue-500 text-white px-4 py-2 rounded-md"
+                  onClick={() => memorizePokemon(item.step as Step)}
                 >
-                  {memorizedPokemon.filter(
-                    (pokemon) => pokemon.step === item.step
-                  ).length +
-                    (item.step === 'unknown'
-                      ? 1025 - memorizedPokemon.length
-                      : 0)}
-                </span>
-                <span className="text-[10px]"> / 1025</span>
+                  {item.text}
+                </button>
+                <div className="mt-2">
+                  <span
+                    className={(() => {
+                      const memorized = memorizedPokemon.find(
+                        (pokemon) => pokemon.no === currentNumber
+                      );
+                      if (memorized) {
+                        return memorized?.step === item.step
+                          ? 'text-red-500'
+                          : '';
+                      }
+                      return item.step === 'unknown' ? 'text-red-500' : '';
+                    })()}
+                  >
+                    {memorizedPokemon.filter(
+                      (pokemon) => pokemon.step === item.step
+                    ).length +
+                      (item.step === 'unknown'
+                        ? 1025 - memorizedPokemon.length
+                        : 0)}
+                  </span>
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
       <div className="flex items-center justify-center gap-[100px] mt-[40px] mb-[100px]">
         {openHint === 0 ? (
