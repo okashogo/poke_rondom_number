@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/poke_rondom_number/static/css/main.607e6406.css",
-    "main.js": "/poke_rondom_number/static/js/main.cd907b20.js",
+    "main.js": "/poke_rondom_number/static/js/main.b58ac9f7.js",
     "static/js/453.46423c3e.chunk.js": "/poke_rondom_number/static/js/453.46423c3e.chunk.js",
     "index.html": "/poke_rondom_number/index.html",
     "main.607e6406.css.map": "/poke_rondom_number/static/css/main.607e6406.css.map",
-    "main.cd907b20.js.map": "/poke_rondom_number/static/js/main.cd907b20.js.map",
+    "main.b58ac9f7.js.map": "/poke_rondom_number/static/js/main.b58ac9f7.js.map",
     "453.46423c3e.chunk.js.map": "/poke_rondom_number/static/js/453.46423c3e.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.607e6406.css",
-    "static/js/main.cd907b20.js"
+    "static/js/main.b58ac9f7.js"
   ]
 }
