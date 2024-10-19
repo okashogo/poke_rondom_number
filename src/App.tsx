@@ -118,18 +118,20 @@ const App: React.FC = () => {
 
   const pickRandomPokemon = () => {
     setAnswerRevealed(false);
-    const availablePokemon = filteredPokemon.filter(
-      (num) =>
-        !memorizedPokemon.some(
-          (pokemon) => pokemon.no === num && pokemon.step === 'fully'
-        )
-    );
-    if (availablePokemon.length === 0 && memorizedPokemon.length > 0) {
+    const weightedPokemon = filteredPokemon.flatMap((num) => {
+      const pokemon = memorizedPokemon.find((p) => p.no === num);
+      if (!pokemon || pokemon.step === 'unknown') return Array(5).fill(num);
+      if (pokemon.step === 'barely') return Array(3).fill(num);
+      if (pokemon.step === 'seen') return Array(2).fill(num);
+      if (pokemon.step === 'just') return [num];
+      return [];
+    });
+    if (weightedPokemon.length === 0 && memorizedPokemon.length > 0) {
       alert('全てのポケモンを覚えました！');
       return;
     }
     const randomPokemon =
-      availablePokemon[Math.floor(Math.random() * availablePokemon.length)];
+      weightedPokemon[Math.floor(Math.random() * weightedPokemon.length)];
     setCurrentNumber(randomPokemon);
     setHintNumbers([
       randomPokemon - 4,
