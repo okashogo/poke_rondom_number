@@ -47,11 +47,25 @@ const App: React.FC = () => {
     } else {
       setFilteredPokemon(Array.from({ length: totalPokemon }, (_, i) => i + 1));
     }
+
+    localStorage.setItem('numberInput', numberInput);
+    localStorage.setItem('fromNumber', fromNumber?.toString() ?? '');
+    localStorage.setItem('toNumber', toNumber?.toString() ?? '');
   };
 
   useEffect(() => {
     const resultStoredMemorizedPokemon =
       localStorage.getItem('memorizedPokemon');
+    const resultStoredNumberInput = localStorage.getItem('numberInput');
+    const resultStoredFromNumber = localStorage.getItem('fromNumber');
+    const resultStoredToNumber = localStorage.getItem('toNumber');
+
+    setNumberInput(resultStoredNumberInput ?? '');
+    setFromNumber(
+      resultStoredFromNumber ? parseInt(resultStoredFromNumber) : null
+    );
+    setToNumber(resultStoredToNumber ? parseInt(resultStoredToNumber) : null);
+
     if (resultStoredMemorizedPokemon && memorizedPokemon.length === 0) {
       console.log(
         'resultStoredMemorizedPokemon',
@@ -130,11 +144,26 @@ const App: React.FC = () => {
   };
 
   const memorizePokemon = (step: Step) => {
-    if (
-      currentNumber !== null &&
-      !memorizedPokemon.some((pokemon) => pokemon.no === currentNumber)
-    ) {
-      setMemorizedPokemon([...memorizedPokemon, { no: currentNumber, step }]);
+    console.log('memorizePokemon', currentNumber);
+    if (currentNumber !== null) {
+      console.log('memorizedPokemon', memorizedPokemon);
+      if (memorizedPokemon.find((pokemon) => pokemon.no === currentNumber)) {
+        console.log(
+          'memorizedPokemon.find((pokemon) => pokemon.no === currentNumber)',
+          memorizedPokemon.find((pokemon) => pokemon.no === currentNumber)
+        );
+        setMemorizedPokemon(
+          memorizedPokemon.map((pokemon) =>
+            pokemon.no === currentNumber ? { ...pokemon, step: step } : pokemon
+          )
+        );
+      } else {
+        console.log(
+          'memorizedPokemon.find((pokemon) => pokemon.no === currentNumber)',
+          memorizedPokemon.find((pokemon) => pokemon.no === currentNumber)
+        );
+        setMemorizedPokemon([...memorizedPokemon, { no: currentNumber, step }]);
+      }
       if (difficulty === 'easy') {
         setOpenHint(0);
       } else if (difficulty === 'normal') {
